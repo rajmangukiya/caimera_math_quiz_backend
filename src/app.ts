@@ -6,6 +6,7 @@ import { db } from "./db/config";
 import cookieParser from "cookie-parser";
 import { createServer } from "http";
 import { Socket } from "./service/socket";
+import { Request, Response } from "express";
 
 dotenv.config();
 
@@ -21,6 +22,10 @@ app.use(cors({
     optionsSuccessStatus: 200
   }));
 app.use(cookieParser());
+
+app.get("/", (req: Request, res: Response) => {
+  return res.status(200).json({ message: "Server is running" });
+});
 
 app.use("/api/v1", router);
 
