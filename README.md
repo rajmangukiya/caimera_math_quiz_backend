@@ -1,6 +1,5 @@
 <!-- stack -->
-Environment: node
-Database: PostgreSQL
+TypeScript, NodeJs, Express, PostgreSQL
 
 <!-- useful scripts -->
 start development server (live): npm run dev
