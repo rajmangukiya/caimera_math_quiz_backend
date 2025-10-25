@@ -8,6 +8,7 @@ const corsOptions = {
 };
 
 // Singleton pattern
+// Socket server could be deployed as microservice
 class Socket {
     private static instance: Socket;
     private io: Server;

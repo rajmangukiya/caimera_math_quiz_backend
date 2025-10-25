@@ -37,19 +37,23 @@ class Quiz {
         if (!this.question) {
             return { isCorrect: false, reason: "No question found" };
         }
+
+        const lock = Lock.getInstance();
+        if (!lock.tryLock()) {
+            return { 
+                isCorrect: false, 
+                reason: "Someone else answered first" 
+            };
+        }
+
         const userAnswerNum = Number(answer);
         const correctAnswerNum = Number(this.question.answer);
         if (!isNaN(userAnswerNum) && !isNaN(correctAnswerNum) && userAnswerNum === correctAnswerNum) {
             this.removeQuestion();
-            const lock = Lock.getInstance();
-            const isSuccess = lock.lock();
-            if (!isSuccess) {
-                return { isCorrect: false, reason: "Lock not acquired" };
-            }
-            
             return { isCorrect: true, reason: "Answer is correct" };
         }
-        console.log('correct answer', correctAnswerNum, 'user answer', userAnswerNum);
+        
+        lock.unlock();
         return { isCorrect: false, reason: "Answer is incorrect" };
     }
 

@@ -1,5 +1,7 @@
 import { db } from "../config"
 
+
+// used raw query for fast development, ORM can be used for database communication purpose
 const createUser = async () => {
     try {
         const query = `INSERT INTO users (id) VALUES (DEFAULT) RETURNING *`

@@ -1,3 +1,7 @@
+// this lock is not centralized, 
+// in case of multiple instances it will break, 
+// at that time redis can be introduced
+
 class Lock {
   private static instance: Lock;
   private _isLocked: boolean;
@@ -13,18 +17,12 @@ class Lock {
     return Lock.instance;
   }
 
-  public lock(): boolean {
+  // this works because javascript is single threaded, so only one thread can execute at a time
+  public tryLock(): boolean {
     if (this._isLocked) {
       return false;
     }
-    let count = 0;
-    count++;
-    if (count > 1) {
-      return false;
-    }
-    this._isLocked = true;
-    
-    this.unlock();
+    this._isLocked = true;    
     return true;
   }
 

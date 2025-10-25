@@ -2,26 +2,25 @@ import { Request, Response } from "express";
 import { Quiz } from "../service/quiz/question";
 import { Socket } from "../service/socket";
 import userQuery from "../db/query/user";
+import Lock from "../service/lock/Lock";
 
 const checkAnswer = async (req: Request, res: Response) => {
   try {  
-    console.log('checkAnswer');
-    
     const { answer } = req.body;
 
     const quiz = Quiz.getInstance();
 
     // concurrent users handling
     const { isCorrect, reason } = quiz.checkAnswer(answer);
-    console.log('reason', reason);
     
     if (!isCorrect) {
-      return res.status(200).json({ message: "Answer is incorrect", isCorrect: false });
+      return res.status(200).json({ message: `Answer is incorrect: ${reason}`, isCorrect: false });
     }
 
     const io = Socket.getInstance();
     if (io) {
       await io.emitQuestionToAll();
+      Lock.getInstance().unlock();
     }
     await userQuery.updateScore(req.cookies.id, 10);
 
